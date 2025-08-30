@@ -1,7 +1,15 @@
+import Header from "./components/Header";
+import Portfolio from "./components/Portfolio";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <div className="min-h-scree">
+        <Header />
+        <main className="container mx-auto p-4">
+          <Portfolio />
+        </main>
+      </div>
     </>
   );
 }
