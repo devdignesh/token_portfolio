@@ -9,6 +9,7 @@ import { AddIcon } from "../assets/AddIcon";
 import { EditIcon } from "../assets/EditIcon";
 import { DeleteIcon } from "../assets/DeleteIcon";
 import AddTokenModal from "./modals/AddTokenModal";
+import Pagination from "./Pagination";
 
 interface WatchlistTableProps {
   tokens: Token[];
@@ -33,12 +34,20 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
   const [editingToken, setEditingToken] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<HoldingsForm>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const tokensPerPage = 10;
 
   const onSubmit = (data: HoldingsForm, tokenId: string) => {
     dispatch(updateHoldings({ id: tokenId, amount: data.amount }));
     setEditingToken(null);
     reset();
   };
+
+  // Calculate paginated tokens
+  const indexOfLastToken = currentPage * tokensPerPage;
+  const indexOfFirstToken = indexOfLastToken - tokensPerPage;
+  const currentTokens = tokens.slice(indexOfFirstToken, indexOfLastToken);
+  const totalPages = Math.ceil(tokens.length / tokensPerPage);
 
   return (
     <div className="  shadow rounded-lg p-6">
@@ -56,7 +65,7 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
           </button>
         </div>
       </div>
-      {tokens.length === 0 ? (
+      {currentTokens.length === 0 ? (
         <p className="text-center text-gray-500">No tokens in watchlist</p>
       ) : (
         <div className="overflow-x-auto">
@@ -73,7 +82,7 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
               </tr>
             </thead>
             <tbody>
-              {tokens.map((token, index) => (
+              {currentTokens.map((token, index) => (
                 <tr key={token.id} className="border-b">
                   <td className="py-2 px-4 flex items-center">
                     <img
@@ -161,6 +170,11 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
               ))}
             </tbody>
           </table>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
       <AddTokenModal

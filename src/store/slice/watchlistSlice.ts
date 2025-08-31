@@ -36,12 +36,13 @@ export const fetchWatchlistTokens = createAsyncThunk(
             ids: ids.join(","),
             sparkline: true,
             price_change_percentage: "24h",
-            x_cg_demo_api_key: process.env.REACT_APP_CG_API_KEY,
+            x_cg_demo_api_key: import.meta.env.VITE_REACT_APP_CG_API_KEY,
           },
         }
       );
       return response.data;
     } catch (error) {
+      console.log("Error fetching watchlist tokens:", error);
       return rejectWithValue("Failed to fetch watchlist tokens");
     }
   }

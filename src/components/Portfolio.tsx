@@ -16,6 +16,13 @@ function Portfolio() {
       hasFetched.current = true;
       dispatch(fetchWatchlistTokens(tokens.map((token) => token.id)));
     }
+    // refresh data every 60 seconds
+    const interval = setInterval(() => {
+      if (tokens.length > 0) {
+        dispatch(fetchWatchlistTokens(tokens.map((token) => token.id)));
+      }
+    }, 60000);
+    return () => clearInterval(interval);
   }, [dispatch, tokens]);
 
   return (

@@ -14,3 +14,9 @@ export interface WatchlistState {
   loading: boolean;
   error: string | null;
 }
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}

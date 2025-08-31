@@ -20,7 +20,7 @@ export const fetchTokens = async (
         sparkline: true,
         price_change_percentage: "24h",
         ids,
-        x_cg_demo_api_key: process.env.REACT_APP_CG_API_KEY,
+        x_cg_demo_api_key: import.meta.env.VITE_REACT_APP_CG_API_KEY,
       },
     });
     return response.data;
@@ -36,7 +36,7 @@ export const fetchAllTokens = async (): Promise<
   try {
     const response = await api.get("/coins/list", {
       params: {
-        x_cg_demo_api_key: process.env.REACT_APP_CG_API_KEY,
+        x_cg_demo_api_key: import.meta.env.VITE_REACT_APP_CG_API_KEY,
       },
     });
     return response.data;
@@ -51,7 +51,7 @@ export const fetchSearchTokens = async (query: string): Promise<string[]> => {
     const response = await api.get("/search", {
       params: {
         query,
-        x_cg_demo_api_key: process.env.REACT_APP_CG_API_KEY,
+        x_cg_demo_api_key: import.meta.env.VITE_REACT_APP_CG_API_KEY,
       },
     });
     return response.data.coins.map((coin: any) => coin.id);
@@ -65,7 +65,7 @@ export const fetchTrendingTokens = async (): Promise<Token[]> => {
   try {
     const response = await api.get("/search/trending", {
       params: {
-        x_cg_demo_api_key: process.env.REACT_APP_CG_API_KEY,
+        x_cg_demo_api_key: import.meta.env.VITE_REACT_APP_CG_API_KEY,
       },
     });
     return response.data.coins.map((coin: any) => coin.item);
