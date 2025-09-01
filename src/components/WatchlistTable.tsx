@@ -76,7 +76,7 @@ const WatchlistTable = memo(({ tokens, holdings }: WatchlistTableProps) => {
       document.removeEventListener("click", handleClickOutside);
       document.removeEventListener("click", handleAddTokenModalClickOutside);
     };
-  }, []);
+  }, [isModalOpen]);
 
   // memoized callbacks
   const onSubmit = useCallback(

@@ -36,7 +36,7 @@ const TokenSparkline = memo(
           </ResponsiveContainer>
         </div>
       );
-    } catch  {
+    } catch {
       // fallback for any chart rendering errors
       return (
         <div className="w-24 h-10 bg-[#2C2C2E] rounded flex items-center justify-center">

@@ -11,8 +11,7 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           charts: ['recharts'],
-          forms: ['react-hook-form'],
-          ui: ['@headlessui/react', '@heroicons/react']
+          forms: ['react-hook-form']
         }
       }
     },
