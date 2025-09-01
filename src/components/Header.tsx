@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi";
 import { LogoIcon } from "../assets/logo";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { CoustomConnectButton } from "./CoustomConnectButton";
 
 const Header = () => {
   const { address, isConnected } = useAccount();
@@ -8,19 +8,13 @@ const Header = () => {
   console.log("Wallet:", { address, isConnected });
 
   return (
-    <header className="bg-white shadow p-4 flex justify-between items-center">
+    <header className="p-4 flex justify-between items-center">
       <div className="flex items-center">
         <LogoIcon />
-        <h1 className="text-xl font-bold ml-2">Token Portfolio</h1>
+        <h1 className="text-xl font-semibold ml-2 text-nowrap">Token Portfolio</h1>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: 12,
-        }}
-      >
-        <ConnectButton />
+      <div>
+        <CoustomConnectButton />
       </div>
     </header>
   );

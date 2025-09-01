@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { useAppDispatch } from "../store/store";
@@ -8,8 +8,10 @@ import { RefreshIcon } from "../assets/RefreshIcon";
 import { AddIcon } from "../assets/AddIcon";
 import { EditIcon } from "../assets/EditIcon";
 import { DeleteIcon } from "../assets/DeleteIcon";
-import AddTokenModal from "./modals/AddTokenModal";
 import Pagination from "./Pagination";
+import { StarIcon } from "../assets/StarIcon";
+import { RowMenuIcon } from "../assets/RowMenuIcon";
+import AddTokenModal from "./modals/AddTokenModal";
 
 interface WatchlistTableProps {
   tokens: Token[];
@@ -20,15 +22,6 @@ interface HoldingsForm {
   amount: number;
 }
 
-const COLORS = [
-  "#2563EB",
-  "#10B981",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#EC4899",
-];
-
 function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
   const dispatch = useAppDispatch();
   const [editingToken, setEditingToken] = useState<string | null>(null);
@@ -36,6 +29,37 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
   const { register, handleSubmit, reset } = useForm<HoldingsForm>();
   const [currentPage, setCurrentPage] = useState(1);
   const tokensPerPage = 10;
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const addtokenRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    };
+
+    const handleAddTokenModalClickOutside = (event: MouseEvent) => {
+      if (
+        addtokenRef.current &&
+        !addtokenRef.current.contains(event.target as Node) &&
+        isModalOpen
+      ) {
+        setIsModalOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("click", handleAddTokenModalClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", handleAddTokenModalClickOutside);
+    };
+  }, [isModalOpen]);
 
   const onSubmit = (data: HoldingsForm, tokenId: string) => {
     dispatch(updateHoldings({ id: tokenId, amount: data.amount }));
@@ -50,134 +74,240 @@ function WatchlistTable({ tokens, holdings }: WatchlistTableProps) {
   const totalPages = Math.ceil(tokens.length / tokensPerPage);
 
   return (
-    <div className="  shadow rounded-lg p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Watchlist</h2>
-        <div className="space-x-2">
-          <button className="text-blue-500 hover:text-blue-600">
+    <div className="mb-5">
+      <div className="flex justify-between items-center mb-4 px-5 sm:px-0">
+        <div className="flex space-x-1 items-center">
+          <StarIcon height={28} width={28} />
+          <h2 className="text-lg sm:text-2xl font-medium">Watchlist</h2>
+        </div>
+        <div className="space-x-2 flex">
+          <button className="py-2 px-3 sm:space-x-1.5 flex items-center justify-center bg-[#27272A] rounded-md hover:bg-[#303035] border border-black/20 cursor-pointer">
             <RefreshIcon />
+            <span className="text-sm hidden sm:block font-medium text-[#F4F4F5]">
+              Refresh Prices
+            </span>
           </button>
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-blue-500 hover:text-blue-600"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
+            className="py-2 px-3 space-x-1.5 bg-[#A9E851] hover:bg-[#8cc63f] border border-[#1F6619] rounded-md text-black font-medium flex items-center cursor-pointer"
           >
             <AddIcon />
+            <span className="text-sm font-medium text-nowrap text-neutral-950">
+              Add Token
+            </span>
           </button>
         </div>
       </div>
       {currentTokens.length === 0 ? (
         <p className="text-center text-gray-500">No tokens in watchlist</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b">
-                <th className="py-2 px-4">Token</th>
-                <th className="py-2 px-4">Price</th>
-                <th className="py-2 px-4">24h %</th>
-                <th className="py-2 px-4">Sparkline (7d)</th>
-                <th className="py-2 px-4">Holdings</th>
-                <th className="py-2 px-4">Value</th>
-                <th className="py-2 px-4"></th>
+        <div className="overflow-x-auto bg-[#212124] rounded-xl border border-white/8 ml-5 sm:ml-0">
+          <table className="w-full text-left overflow-x-auto overflow-scroll">
+            <thead className="h-12">
+              <tr className="border-b border-white/8 bg-[#27272A]">
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  Token
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  Price
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  24h %
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  Sparkline (7d)
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  Holdings
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]">
+                  Value
+                </th>
+                <th className="py-4 px-6 text-sm font-medium text-[#A1A1AA]"></th>
               </tr>
             </thead>
             <tbody>
-              {currentTokens.map((token, index) => (
-                <tr key={token.id} className="border-b">
-                  <td className="py-2 px-4 flex items-center">
-                    <img
-                      src={token.image}
-                      alt={token.name}
-                      className="w-6 h-6 mr-2"
-                    />
-                    {token.name} ({token.symbol.toUpperCase()})
+              {currentTokens.map((token) => (
+                <tr key={token.id} className="h-12">
+                  <td className="px-6">
+                    <div className="flex items-center text-nowrap">
+                      <img
+                        src={token.image}
+                        alt={token.name}
+                        className="w-8 h-8 mr-3 rounded-sm"
+                      />
+
+                      <span className="text-[#F4F4F5] font-normal text-[13px] mr-1">
+                        {token.name}
+                      </span>
+                      <span className="text-[#A1A1AA] font-normal text-[13px]">
+                        ({token.symbol.toUpperCase()})
+                      </span>
+                    </div>
                   </td>
-                  <td className="py-2 px-4">
-                    ${token.current_price.toFixed(2)}
+                  <td className="px-6">
+                    <span className="text-[#A1A1AA] font-normal text-[13px]">
+                      $
+                      {token.current_price.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </td>
-                  <td
-                    className={`py-2 px-4 ${
-                      token.price_change_percentage_24h >= 0
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {token.price_change_percentage_24h.toFixed(2)}%
+                  <td className="px-6">
+                    <span
+                      className={`font-normal text-[13px] ${
+                        token.price_change_percentage_24h >= 0
+                          ? "text-green-400"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {token.price_change_percentage_24h >= 0 ? "+" : ""}
+                      {token.price_change_percentage_24h.toFixed(2)}%
+                    </span>
                   </td>
-                  <td className="py-2 px-4">
-                    <ResponsiveContainer width={100} height={40}>
-                      <LineChart
-                        data={token.sparkline_in_7d.price.map((price) => ({
-                          price,
-                        }))}
-                      >
-                        <Line
-                          type="monotone"
-                          dataKey="price"
-                          stroke={COLORS[index % COLORS.length]}
-                          dot={false}
-                          strokeWidth={2}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                  <td className="px-6">
+                    <div className="w-24 h-10">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={token.sparkline_in_7d.price.map((price) => ({
+                            price,
+                          }))}
+                        >
+                          <Line
+                            type="monotone"
+                            dataKey="price"
+                            stroke={
+                              token.price_change_percentage_24h >= 0
+                                ? "#10B981"
+                                : "#EF4444"
+                            }
+                            dot={false}
+                            strokeWidth={2}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   </td>
-                  <td className="py-2 px-4">
+                  <td className="px-6 min-w-[220px]">
                     {editingToken === token.id ? (
                       <form
                         onSubmit={handleSubmit((data) =>
                           onSubmit(data, token.id)
                         )}
+                        className="flex items-center space-x-3"
                       >
                         <input
                           type="number"
                           step="0.0001"
                           defaultValue={holdings[token.id] || 0}
                           {...register("amount", { required: true, min: 0 })}
-                          className="w-24 p-1 border rounded"
+                          placeholder="Select"
+                          className="w-[109px] px-2 h-8 bg-[#2C2C2E] border rounded-md border-[#A9E851] drop-shadow-[#A9E851] text-white text-sm focus:outline-none"
                         />
                         <button
                           type="submit"
-                          className="ml-2 text-blue-500 hover:text-blue-600"
+                          className="px-2.5 py-1.5 h-8 items-center flex  rounded-md bg-[#A9E851] border border-[#1F6619] text-neutral-950 text-[13px] font-medium transition-colors"
                         >
                           Save
                         </button>
                       </form>
                     ) : (
-                      <span>{holdings[token.id] || 0}</span>
+                      <span className="text-[#F4F4F5] font-normal text-[13px]">
+                        {holdings[token.id] || 0}
+                      </span>
                     )}
                   </td>
-                  <td className="py-2 px-4">
-                    $
-                    {((holdings[token.id] || 0) * token.current_price).toFixed(
-                      2
-                    )}
+                  <td className="px-6">
+                    <span className="text-[#F4F4F5] font-normal text-[13px]">
+                      $
+                      {(
+                        (holdings[token.id] || 0) * token.current_price
+                      ).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </td>
-                  <td className="py-2 px-4 flex space-x-2">
-                    <button
-                      onClick={() => setEditingToken(token.id)}
-                      className="text-blue-500 hover:text-blue-600"
-                    >
-                      <EditIcon />
-                    </button>
-                    <button
-                      onClick={() => dispatch(removeToken(token.id))}
-                      className="text-red-500 hover:text-red-600"
-                    >
-                      <DeleteIcon />
-                    </button>
+                  <td className="px-6">
+                    <div className="flex items-center justify-center relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDropdown(
+                            openDropdown === token.id ? null : token.id
+                          );
+                        }}
+                        className="hover:bg-[#27272A] cursor-pointer rounded-md  h-7 w-7 items-center text-center flex"
+                      >
+                        <RowMenuIcon />
+                      </button>
+
+                      {openDropdown === token.id && (
+                        <div
+                          ref={dropdownRef}
+                          className="absolute lg:right-12 lg:-top-4 right-2 -top-16 shadow-lg z-50 w-[144px] h-[72px]
+             bg-[#27272A] rounded-lg border border-black/20 py-1 pointer-events-auto px-1"
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <button
+                            onClick={() => setEditingToken(token.id)}
+                            className="w-full flex items-center gap-2 px-2 py-1 h-7 rounded-sm hover:bg-[#3F3F46] transition-colors text-left font-medium text-[#A1A1AA]  text-[13px] whitespace-nowrap"
+                          >
+                            <EditIcon />
+                            Edit Holdings
+                          </button>
+
+                          <div className="w-full h-px bg-[#3F3F46] my-1"></div>
+
+                          <button
+                            onClick={() => dispatch(removeToken(token.id))}
+                            className="w-full flex items-center gap-3 px-2 py-1 h-7 rounded-sm transition-colors hover:bg-[#3F3F46]  font-medium text-left text-[#FDA4AF] text-[13px] whitespace-nowrap"
+                          >
+                            <DeleteIcon />
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="border-t border-white/8">
+                <td colSpan={7}>
+                  <div className="flex flex-row justify-between items-center w-full h-[60px] p-4 ">
+                    <div className="w-full h-7 flex rounded-md py-1 px-2 space-x-1 text-[#A1A1AA]">
+                      <span className="text-[13px] font-medium ">
+                        {indexOfFirstToken + 1}-
+                        {Math.min(indexOfLastToken, tokens.length)} of{" "}
+                        {tokens.length}
+                      </span>
+                    </div>
+
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
           </table>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
         </div>
       )}
       <AddTokenModal
+        ref={addtokenRef}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />

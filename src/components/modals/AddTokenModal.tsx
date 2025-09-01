@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, forwardRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   fetchSearchTokens,
@@ -13,6 +13,7 @@ import { filterTokens } from "../../utils/tokenUtils";
 interface AddTokenModalProps {
   isOpen: boolean;
   onClose: () => void;
+  ref?: React.RefObject<HTMLDivElement>
 }
 
 interface TokenOption {
@@ -25,7 +26,7 @@ interface TokenOption {
   sparkline_in_7d: { price: number[] };
 }
 
-function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
+const AddTokenModal = forwardRef<HTMLDivElement, AddTokenModalProps>(({ isOpen, onClose }, ref) => {
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTokenIds, setSelectedTokenIds] = useState<string[]>([]);
@@ -60,6 +61,7 @@ function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
           setLoading(false);
         })
         .catch((err) => {
+          console.log("Error : failed to fetch tokens", err);
           setError("Failed to load tokens");
           setLoading(false);
         });
@@ -83,6 +85,7 @@ function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
         query || currentPage === 1 ? newTokens : [...prev, ...newTokens]
       );
     } catch (err) {
+      console.log("Error : load tokens", err);
       setError("Failed to load tokens");
     } finally {
       setLoading(false);
@@ -141,26 +144,31 @@ function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-gray-500 rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Add Token</h2>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search tokens..."
-          className="w-full p-2 border rounded mb-4"
-        />
-        {loading && <p className="text-center">Loading...</p>}
+    <div  className="fixed inset-0 bg-[#212124D9] flex items-center justify-center">
+      <div ref={ref} className="bg-[#212124] rounded-xl overflow-hidden max-h-[480px] flex flex-col w-[640px] border border-[#00000052] shadow-xl">
+        <div className="w-full py-3 px-4 border-b border-white/8 flex items-center justify-center">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search tokens (e.g., ETH, SOL)..."
+            className="rounded h-7 w-[608px] text-sm font-normal placeholder:text-[#71717A] text-[#F4F4F5] outline-none focus:outline-none border-0"
+          />
+        </div>
+
         {error && <p className="text-center text-red-500">{error}</p>}
-        <div className="max-h-64 overflow-y-auto">
-          <h3 className="text-lg font-semibold mb-2">Trending</h3>
+        <div className="px-2  overflow-auto ">
+          <div className="rounded-md pt-3 px-2 pb-1">
+            <span className="text-xs font-medium">Trending</span>
+          </div>
           <TokenList
             tokens={filteredTrendingTokens}
             selectedTokenIds={selectedTokenIds}
             onToggleToken={handleToggleToken}
           />
-          <h3 className="text-lg font-semibold my-2">All Tokens</h3>
+          <div className="rounded-md pt-3 px-2 pb-1">
+            <span className="text-xs font-medium">All Tokens</span>
+          </div>
           {filteredTokens.length === 0 && !loading && (
             <p className="text-center text-gray-500">No tokens found</p>
           )}
@@ -178,20 +186,15 @@ function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
             </button>
           )}
         </div>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-500 hover:text-gray-700 mr-2"
-          >
-            Cancel
-          </button>
+        <div className="flex py-3 px-4 justify-end h-[57px] bg-[#27272A] border-t border-white/10">
+          
           <button
             onClick={handleAddTokens}
             disabled={selectedTokenIds.length === 0}
-            className={`px-4 py-2 rounded ${
+            className={`h-8  rounded-md py-1.5 px-2.5 border text-[13px] font-medium border-white/10 ${
               selectedTokenIds.length > 0
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? "bg-[#A9E851] ring-1 ring-[#1F6619] text-neutral-950 hover:bg-blue-600 "
+                : "bg-[#27272A] text-[#52525B] cursor-not-allowed "
             }`}
           >
             Add to Watchlist
@@ -200,6 +203,6 @@ function AddTokenModal({ isOpen, onClose }: AddTokenModalProps) {
       </div>
     </div>
   );
-}
+});
 
 export default AddTokenModal;

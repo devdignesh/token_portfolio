@@ -4,11 +4,9 @@ import Portfolio from "./components/Portfolio";
 function App() {
   return (
     <>
-      <div className="min-h-scree">
+      <div className="min-h-screen max-w-7xl mx-auto">
         <Header />
-        <main className="container mx-auto p-4">
-          <Portfolio />
-        </main>
+        <Portfolio />
       </div>
     </>
   );
