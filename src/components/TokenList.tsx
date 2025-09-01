@@ -25,23 +25,26 @@ function TokenList({
       {tokens.map((token) => (
         <div
           key={token.id}
-          className="flex items-center justify-between py-2 border-b"
+          onClick={() => onToggleToken(token.id)}
+          className={`flex items-center justify-between p-2 h-11 rounded-md ${
+            selectedTokenIds.includes(token.id) ? "bg-[#27272A]" : ""
+          }`}
         >
-          <div className="flex items-center">
+          <div className="flex items-center space-x-3">
             {token.image ? (
               <img
                 src={token.image}
                 alt={token.name}
-                className="w-6 h-6 mr-2"
+                className="w-7 h-7 rounded-md p-0.5"
               />
             ) : (
               <RandomLogo width={40} height={40} />
             )}
-            <span>
+            <span className="text-[#F4F4F5] font-normal text-sm">
               {token.name} ({token.symbol.toUpperCase()})
             </span>
           </div>
-          <button onClick={() => onToggleToken(token.id)}>
+          <button>
             {selectedTokenIds.includes(token.id) ? (
               <UncheckIcon />
             ) : (

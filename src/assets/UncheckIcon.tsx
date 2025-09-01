@@ -1,7 +1,7 @@
 export const UncheckIcon = () => (
   <svg
-    width="13"
-    height="14"
+    width="15"
+    height="15"
     viewBox="0 0 13 14"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

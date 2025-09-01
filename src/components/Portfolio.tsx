@@ -26,9 +26,9 @@ function Portfolio() {
   }, [dispatch, tokens]);
 
   return (
-    <div className="space-y-6">
-      {loading && <p className="text-center">Loading...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
+    <div className="sm:px-7 mt-4 space-y-12">
+      {/* {loading && <p className="text-center">Loading...</p>} */}
+      {/* {error && <p className="text-center text-red-500">{error}</p>} */}
       <PortfolioTotal tokens={tokens} holdings={holdings} />
       <WatchlistTable tokens={tokens} holdings={holdings} />
     </div>

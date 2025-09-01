@@ -1,20 +1,12 @@
 import { useMemo } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import type { Token } from "../types";
+import { prepareChartData } from "../utils/chartUtils";
+import DonutChart from "./charts/DonutChart";
 
 interface PortfolioTotalProps {
   tokens: Token[];
   holdings: { [key: string]: number };
 }
-
-const COLORS = [
-  "#2563EB",
-  "#10B981",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#EC4899",
-];
 
 function PortfolioTotal({ tokens, holdings }: PortfolioTotalProps) {
   const totalValue = useMemo(() => {
@@ -24,73 +16,73 @@ function PortfolioTotal({ tokens, holdings }: PortfolioTotalProps) {
     }, 0);
   }, [tokens, holdings]);
 
-  const chartData = useMemo(() => {
-    return tokens
-      .map((token) => ({
-        name: token.name,
-        value: (holdings[token.id] || 0) * token.current_price,
-      }))
-      .filter((item) => item.value > 0)
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 6);
-  }, [tokens, holdings]);
+  const chartData = useMemo(
+    () => prepareChartData(tokens, holdings),
+    [tokens, holdings]
+  );
 
-  const lastUpdated = new Date().toLocaleString();
+  const lastUpdated = new Date().toLocaleTimeString("en-US", {
+    hour12: true,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
   return (
-    <div className="bg-white shadow rounded-lg p-6 flex flex-col md:flex-row justify-between">
-      <div className="flex flex-col justify-center">
-        <h2 className="text-3xl font-bold">${totalValue.toFixed(2)}</h2>
-        <p className="text-gray-500">Portfolio Total</p>
-        <p className="text-sm text-gray-400 mt-2">
+    <div className="bg-[#27272A] grid grid-cols-1 md:grid-cols-2 sm:gap-4 gap-8 p-6 sm:rounded-xl">
+      <div className="w-full text-start flex flex-col justify-between h-full space-y-5 md:space-y-0">
+        <div className="flex flex-col justify-start space-y-5">
+          <span className="text-[#A1A1AA] text-base font-medium">
+            Portfolio Total
+          </span>
+          <h2 className="sm:text-[56px] text-[40px] font-medium tracking-[2.24] leading-[110%] ">
+            $
+            {totalValue.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </h2>
+        </div>
+
+        <p className="text-xs font-normal text-neutral-400 mt-auto">
           Last updated: {lastUpdated}
         </p>
       </div>
-      <div className="w-full md:w-1/3 mt-4 md:mt-0">
-        {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                innerRadius={50}
-              >
-                {chartData.map((_, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-center text-gray-500">No holdings to display</p>
-        )}
-
-        <div className="w-full md:w-1/2 flex flex-col justify-center">
+      <div className="w-full flex flex-col gap-5">
+        <span className="text-[#A1A1AA] text-base font-medium">
+          Portfolio Total
+        </span>
+        <div className="flex gap-5 flex-col sm:flex-row items-center">
           {chartData.length > 0 ? (
-            <ul>
-              {chartData.map((item, index) => (
-                <li key={item.name} className="flex items-center py-1">
-                  <span
-                    className="w-4 h-4 mr-2 rounded-full"
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                  ></span>
-                  <span>
-                    {item.name} ({((item.value / totalValue) * 100).toFixed(1)}
-                    %)
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <DonutChart data={chartData} />
           ) : (
-            <p className="text-gray-500">No tokens to display</p>
+            <p className="text-center text-gray-500">No holdings to display</p>
           )}
+
+          <div className="w-full flex flex-col">
+            {chartData.length > 0 ? (
+              <ul className="space-y-4">
+                {chartData.map((item) => (
+                  <li
+                    key={item.name}
+                    className="flex items-center justify-between"
+                  >
+                    <span
+                      className="font-medium text-sm"
+                      style={{ color: item.color }}
+                    >
+                      {item.name} ({item.symbol.toUpperCase()})
+                    </span>
+                    <span className="text-[#A1A1AA] text-sm font-medium">
+                      {((item.value / totalValue) * 100).toFixed(1)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No tokens to display</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -18,28 +18,30 @@ const Pagination = ({
   };
 
   return (
-    <div className="flex justify-end items-center mt-4 space-x-2">
+    <div className="flex flex-row justify-end items-center space-x-2">
+      <button className="rounded-md h-7 py-1 px-2 text-[#A1A1AA] text-[13px] text-nowrap font-medium hover:bg-[#3F3F46] transition-colors cursor-pointer">
+        Page {currentPage} of {totalPages}
+      </button>
+
       <button
         onClick={handlePrev}
         disabled={currentPage === 1}
-        className={`px-3 py-1 rounded ${
+        className={`rounded-md py-1 h-7  px-2 text-[13px] font-medium  transition-colors  ${
           currentPage === 1
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-blue-500 text-white hover:bg-blue-600"
+            ? "cursor-not-allowed text-[#52525B]"
+            : "text-[#A1A1AA] cursor-pointer hover:bg-[#3F3F46]"
         }`}
       >
         Previous
       </button>
-      <span>
-        Page {currentPage} of {totalPages}
-      </span>
+
       <button
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        className={`px-3 py-1 rounded ${
+        className={`rounded-md py-1 h-7 px-2 text-[13px] font-medium  transition-colors  ${
           currentPage === totalPages
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-blue-500 text-white hover:bg-blue-600"
+            ? "cursor-not-allowed text-[#52525B]"
+            : "text-[#A1A1AA] cursor-pointer hover:bg-[#3F3F46]"
         }`}
       >
         Next
