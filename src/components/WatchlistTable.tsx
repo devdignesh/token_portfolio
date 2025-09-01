@@ -236,16 +236,23 @@ const WatchlistTable = memo(({ tokens, holdings }: WatchlistTableProps) => {
                   </span>
                 </td>
                 <td className="px-6">
-                  <Suspense
-                    fallback={
-                      <div className="w-24 h-10 bg-[#2C2C2E] animate-pulse rounded" />
-                    }
-                  >
-                    <TokenSparkline
-                      sparklineData={token.sparkline_in_7d.price}
-                      priceChange={token.price_change_percentage_24h}
-                    />
-                  </Suspense>
+                  {token.sparkline_in_7d?.price &&
+                  token.sparkline_in_7d.price.length > 0 ? (
+                    <Suspense
+                      fallback={
+                        <div className="w-24 h-10 bg-[#2C2C2E] animate-pulse rounded" />
+                      }
+                    >
+                      <TokenSparkline
+                        sparklineData={token.sparkline_in_7d.price}
+                        priceChange={token.price_change_percentage_24h}
+                      />
+                    </Suspense>
+                  ) : (
+                    <div className="w-24 h-10 bg-[#2C2C2E] rounded flex items-center justify-center">
+                      <span className="text-[#A1A1AA] text-xs">No data</span>
+                    </div>
+                  )}
                 </td>
                 <td className="px-6 min-w-[220px]">
                   {editingToken === token.id ? (
