@@ -56,11 +56,13 @@ function PortfolioTotal({ tokens, holdings }: PortfolioTotalProps) {
           {chartData.length > 0 ? (
             <DonutChart data={chartData} />
           ) : (
-            <p className="text-center text-gray-500">No holdings to display</p>
+            <p className="text-center text-sm text-[#A1A1AA] text-nowrap">
+              No holdings to display
+            </p>
           )}
 
           <div className="w-full flex flex-col">
-            {chartData.length > 0 ? (
+            {chartData.length > 0 && (
               <ul className="space-y-4">
                 {chartData.map((item) => (
                   <li
@@ -79,8 +81,6 @@ function PortfolioTotal({ tokens, holdings }: PortfolioTotalProps) {
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="text-gray-500">No tokens to display</p>
             )}
           </div>
         </div>

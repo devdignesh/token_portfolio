@@ -6,7 +6,7 @@ import { fetchWatchlistTokens } from "../store/slice/watchlistSlice";
 
 function Portfolio() {
   const dispatch = useAppDispatch();
-  const { tokens, holdings, loading, error } = useAppSelector(
+  const { tokens, holdings, error } = useAppSelector(
     (state) => state.watchlist
   );
   const hasFetched = useRef(false);
@@ -25,10 +25,11 @@ function Portfolio() {
     return () => clearInterval(interval);
   }, [dispatch, tokens]);
 
+  console.log("error", error);
+
   return (
     <div className="sm:px-7 mt-4 space-y-12">
       {/* {loading && <p className="text-center">Loading...</p>} */}
-      {/* {error && <p className="text-center text-red-500">{error}</p>} */}
       <PortfolioTotal tokens={tokens} holdings={holdings} />
       <WatchlistTable tokens={tokens} holdings={holdings} />
     </div>

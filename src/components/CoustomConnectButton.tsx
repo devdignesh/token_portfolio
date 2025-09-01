@@ -64,7 +64,7 @@ export const CoustomConnectButton = () => {
                           width: 16,
                           height: 16,
                           borderRadius: 999,
-                          overflow: "hidden", 
+                          overflow: "hidden",
                         }}
                       >
                         {chain.iconUrl && (
