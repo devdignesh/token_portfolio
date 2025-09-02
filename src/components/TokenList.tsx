@@ -1,4 +1,5 @@
 import { CheckIcon } from "../assets/CheckIcon";
+import { StarIcon } from "../assets/StarIcon";
 import { UncheckIcon } from "../assets/UncheckIcon";
 import RandomLogo from "./RandomLogo";
 
@@ -26,8 +27,10 @@ function TokenList({
         <div
           key={token.id}
           onClick={() => onToggleToken(token.id)}
-          className={`flex items-center justify-between p-2 h-11 rounded-md ${
-            selectedTokenIds.includes(token.id) ? "bg-[#27272A]" : ""
+          className={`flex items-center justify-between p-2 my-[1px] h-11 rounded-md cursor-pointer  ${
+            selectedTokenIds.includes(token.id)
+              ? "bg-[#A9E8510F] "
+              : "hover:bg-[#27272A]"
           }`}
         >
           <div className="flex items-center space-x-3">
@@ -44,13 +47,21 @@ function TokenList({
               {token.name} ({token.symbol.toUpperCase()})
             </span>
           </div>
-          <button>
-            {selectedTokenIds.includes(token.id) ? (
-              <UncheckIcon />
-            ) : (
-              <CheckIcon />
+          <div className="flex items-center space-x-3">
+            {selectedTokenIds.includes(token.id) && (
+              <StarIcon height={17} width={17} />
             )}
-          </button>
+            <button
+              onClick={() => onToggleToken(token.id)}
+              className="cursor-pointer"
+            >
+              {selectedTokenIds.includes(token.id) ? (
+                <UncheckIcon />
+              ) : (
+                <CheckIcon />
+              )}
+            </button>
+          </div>
         </div>
       ))}
     </>

@@ -123,12 +123,13 @@ const AddTokenModal = forwardRef<HTMLDivElement, AddTokenModalProps>(
             entries[0].isIntersecting &&
             !isFetching &&
             !debouncedSearchQuery &&
-            tokens.length > 0
+            tokens.length > 0 &&
+            !loading
           ) {
             setPage((prev) => prev + 1);
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.1, rootMargin: "100px" }
       );
 
       if (currentSentinel) {
@@ -140,7 +141,7 @@ const AddTokenModal = forwardRef<HTMLDivElement, AddTokenModalProps>(
           observer.unobserve(currentSentinel);
         }
       };
-    }, [isFetching, debouncedSearchQuery, tokens.length]);
+    }, [isFetching, debouncedSearchQuery, tokens.length, loading]);
 
     const filteredTokens = useMemo(
       () =>
@@ -182,62 +183,79 @@ const AddTokenModal = forwardRef<HTMLDivElement, AddTokenModalProps>(
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 bg-[#212124D9] flex items-center justify-center">
-        <div
-          ref={ref}
-          className="bg-[#212124] rounded-xl overflow-hidden max-h-[480px] mx-4 sm:mx-0 flex flex-col w-[640px] border border-[#00000052] shadow-xl"
-        >
-          <div className="w-full py-3 px-4 border-b border-white/8 flex items-center justify-center">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tokens (e.g., ETH, SOL)..."
-              className="rounded h-7 w-[608px] text-sm font-normal placeholder:text-[#71717A] text-[#F4F4F5] outline-none focus:outline-none border-0"
-            />
-          </div>
+      <>
+        <div className="fixed inset-0 bg-[#212124D9] flex items-center justify-center">
+          <div
+            ref={ref}
+            className="bg-[#212124] rounded-xl overflow-hidden max-h-[480px] mx-4 sm:mx-0 flex flex-col w-[640px] border border-[#00000052] shadow-xl"
+          >
+            <div className="w-full py-3 px-4 border-b border-white/8 flex items-center justify-center">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tokens (e.g., ETH, SOL)..."
+                className="rounded h-7 w-[608px] text-sm font-normal placeholder:text-[#71717A] text-[#F4F4F5] outline-none focus:outline-none border-0"
+              />
+            </div>
 
-          {error && <p className="text-center text-xs text-red-300">{error}</p>}
-          <div ref={scrollRef} className="px-2  overflow-auto ">
-            <div className="rounded-md pt-3 px-2 pb-1">
-              <span className="text-xs font-medium">Trending</span>
-            </div>
-            <TokenList
-              tokens={filteredTrendingTokens}
-              selectedTokenIds={selectedTokenIds}
-              onToggleToken={handleToggleToken}
-            />
-            <div className="rounded-md pt-3 px-2 pb-1">
-              <span className="text-xs font-medium">All Tokens</span>
-            </div>
-            {filteredTokens.length === 0 && !loading && (
-              <p className="text-center text-gray-500">No tokens found</p>
+            {error && (
+              <p className="text-center text-xs text-red-300">{error}</p>
             )}
-            <TokenList
-              tokens={filteredTokens}
-              selectedTokenIds={selectedTokenIds}
-              onToggleToken={handleToggleToken}
-            />
-            <div ref={sentinelRef} className="h-1" />
-            {isFetching && (
-              <p className="text-center text-xs">Loading more...</p>
-            )}
-          </div>
-          <div className="flex py-3 px-4 justify-end h-[57px] bg-[#27272A] border-t border-white/10">
-            <button
-              onClick={handleAddTokens}
-              disabled={selectedTokenIds.length === 0}
-              className={`h-8  rounded-md py-1.5 px-2.5 border text-[13px] font-medium border-white/10 ${
-                selectedTokenIds.length > 0
-                  ? "bg-[#A9E851] ring-1 ring-[#1F6619] text-neutral-950 hover:bg-[#BAF264] cursor-pointer"
-                  : "bg-[#27272A] text-[#52525B] cursor-not-allowed "
-              }`}
+            <div
+              ref={scrollRef}
+              className="px-2 overflow-auto "
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#FFFFFF1A transparent",
+              }}
             >
-              Add to Watchlist
-            </button>
+              <div className="rounded-md pt-3 px-2 pb-1">
+                <span className="text-xs font-medium text-[#71717A]">
+                  Trending
+                </span>
+              </div>
+              <TokenList
+                tokens={filteredTrendingTokens}
+                selectedTokenIds={selectedTokenIds}
+                onToggleToken={handleToggleToken}
+              />
+              <div className="rounded-md pt-3 px-2 pb-1">
+                <span className="text-xs font-medium text-[#71717A]">
+                  All Tokens
+                </span>
+              </div>
+              {filteredTokens.length === 0 && !loading && (
+                <p className="text-center text-gray-500">No tokens found</p>
+              )}
+              <TokenList
+                tokens={filteredTokens}
+                selectedTokenIds={selectedTokenIds}
+                onToggleToken={handleToggleToken}
+              />
+              <div ref={sentinelRef} className="h-1" />
+              {isFetching && (
+                <p className="text-center text-xs text-[#71717A]">
+                  Loading more...
+                </p>
+              )}
+            </div>
+            <div className="flex py-3 px-4 justify-end h-[57px] bg-[#27272A] border-t border-white/10">
+              <button
+                onClick={handleAddTokens}
+                disabled={selectedTokenIds.length === 0}
+                className={`h-8  rounded-md py-1.5 px-2.5 border text-[13px] font-medium border-white/10 ${
+                  selectedTokenIds.length > 0
+                    ? "bg-[#A9E851] ring-1 ring-[#1F6619] text-neutral-950 hover:bg-[#BAF264] cursor-pointer"
+                    : "bg-[#27272A] text-[#52525B] cursor-not-allowed "
+                }`}
+              >
+                Add to Watchlist
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 );
