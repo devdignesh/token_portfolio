@@ -1,14 +1,26 @@
 # Token portfolio
-A simple app to track your favorite cryptocurrencies, view their prices, and manage a portfolio with a clean UI.
+A modern, pixel-perfect crypto portfolio dashboard to track, manage, and visualize your favorite tokens — all in real time.
 
 ## Tech Stack
-- React + Vite
-- TypeScript
-- Redux Toolkit
-- Tailwind CSS
-- Wallet (wagmi + RainbowKit)
-- CoinGecko API
-  
+- **Frontend**: React (Vite) + TypeScript
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS
+- **Wallet Integration**: wagmi + RainbowKit
+- **API**: CoinGecko
+- **Charts**: Custom SVG Donut Chart
+
+## Preview
+<img width="1440" height="920" alt="dashboard" src="https://github.com/user-attachments/assets/de8bc6e0-ca17-4b24-8ff9-f252762823ab" />
+
+## Features
+
+- **Search 18,000+ cryptocurrencies** using CoinGecko API with intelligent debounce.
+- **Add / remove tokens** to your personal watchlist with one click.
+- **Real-time price updates** every 60 seconds for accurate portfolio tracking.
+- **Custom SVG donut chart** to visualize portfolio distribution dynamically.
+- **Paginated & optimized table view** (10 tokens per page).
+- **Connect crypto wallet** via wagmi + RainbowKit for real-time token interaction.
+- **Pixel-perfect & fully responsive UI** designed for clarity and speed.
 
 ## How to Install
 ```bash
@@ -17,20 +29,21 @@ cd token_portfolio
 npm install
 npm run dev
 ```
-## Features
 
-- Add/remove tokens to watchlist
-- Real-time price updates every 60 seconds
-- Portfolio value with custom SVG donut chart
-- Paginated watchlist table (10 tokens/page)
-- Search tokens with debounced input
-- Filter out existing watchlist tokens
-- Pixel perfect & responsive ui
+## Performance & Optimization
 
-## Optimization Solutions
+- **Lazy Loading**: Dynamically import modal and chart components.
+- **React Optimizations**: Used React.memo, useCallback, and useMemo to minimize re-renders.
+- **Infinite Scroll**: Auto-fetch tokens in AddTokenModal when scrolling.
+- **Bundle Optimization**: Manual chunking in Vite config to separate vendor libs.
+- **Build Efficiency**: Increased Vite chunk size limit for smoother performance.
 
-- Code Splitting & Lazy Loading: Lazy-loaded AddTokenModal and TokenSparkline to reduce bundle size.
-- React Performance: Used React.memo, useCallback, and useMemo to prevent re-renders and optimize calculations.
-- Infinite Scroll: Auto-fetch next page of tokens when scrolling to bottom in AddTokenModal.
-- Bundle Size: Manual chunking in Vite config, separated vendor libraries (React, Recharts, etc.), and removed unused imports.
-- Build Config: Increased Vite chunk size limit to 1000kb for efficient splitting.
+
+
+
+## Project Insight
+
+This project showcases advanced **frontend architecture**, **state management**, and **real-time data handling** with crypto APIs. <br/>
+It reflects my focus on **pixel-perfect UI**, **scalable component design**, and **performance tuning** in production-level applications.
+
+
