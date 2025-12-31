@@ -1,5 +1,12 @@
-# Token portfolio
-A modern, pixel-perfect crypto portfolio dashboard to track, manage, and visualize your favorite tokens — all in real time.
+# Crypto token portfolio
+Built a [pixel-perfect](https://www.figma.com/design/3YBkEwe29HC3gKfDlb5IeR/Token-Portfolio--desktop-mobile-?node-id=1-4706&t=VE3LT30IX8IEBzPb-1) crypto portfolio tracker using **React**, **TypeScript**, **Redux Toolkit**, **TailwindCSS**, **wagmi**, **RainbowKit** and the CoinGecko API. allowing users to search over **18,000+ tokens**, connect wallets and manage real-time portfolios with optimized performance
+
+## Preview
+<img width="1440" height="920" alt="dashboard" src="https://github.com/user-attachments/assets/de8bc6e0-ca17-4b24-8ff9-f252762823ab" />
+
+## Project Insight
+
+This project showcases advanced **frontend architecture**, **state management** and **real-time data handling** with crypto APIs. It reflects my focus on **pixel-perfect UI**, **scalable component design**, and **performance tuning** in production-level applications.
 
 ## Tech Stack
 - **Frontend**: React (Vite) + TypeScript
@@ -9,8 +16,6 @@ A modern, pixel-perfect crypto portfolio dashboard to track, manage, and visuali
 - **API**: CoinGecko
 - **Charts**: Custom SVG Donut Chart
 
-## Preview
-<img width="1440" height="920" alt="dashboard" src="https://github.com/user-attachments/assets/de8bc6e0-ca17-4b24-8ff9-f252762823ab" />
 
 ## Features
 
@@ -37,13 +42,5 @@ npm run dev
 - **Infinite Scroll**: Auto-fetch tokens in AddTokenModal when scrolling.
 - **Bundle Optimization**: Manual chunking in Vite config to separate vendor libs.
 - **Build Efficiency**: Increased Vite chunk size limit for smoother performance.
-
-
-
-
-## Project Insight
-
-This project showcases advanced **frontend architecture**, **state management**, and **real-time data handling** with crypto APIs. <br/>
-It reflects my focus on **pixel-perfect UI**, **scalable component design**, and **performance tuning** in production-level applications.
 
 
